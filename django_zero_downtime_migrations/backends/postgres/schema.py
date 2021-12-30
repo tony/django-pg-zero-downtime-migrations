@@ -390,7 +390,9 @@ class DatabaseSchemaEditorMixin:
 
     def alter_db_table(self, model, old_db_table, new_db_table):
         # Disregard cases where db_table is unchanged
-        if old_db_table != new_db_table:
+        if (old_db_table != new_db_table and not
+           (self.connection.features.ignores_table_name_case and
+                old_db_table.lower() != new_db_table.lower())):
             if self.RAISE_FOR_UNSAFE:
                 raise UnsafeOperationException(Unsafe.ALTER_TABLE_RENAME)
             else:
